@@ -2,6 +2,7 @@ venv
 .idea
 *.csv
 __pycache__/
+log/
 *.sys
 smartbox-prod*
 PingBytes
