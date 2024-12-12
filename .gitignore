@@ -1,0 +1,12 @@
+venv
+.idea
+*.csv
+__pycache__/
+*.sys
+smartbox-prod*
+PingBytes
+PongBytes
+*.exe
+*.bin
+*dev*.json
+*prod*.json

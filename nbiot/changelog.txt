@@ -1,0 +1,70 @@
+
+# Change Log
+All notable changes to this project will be documented in this file.
+ 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+ 
+## [Unreleased] - yyyy-mm-dd
+ 
+Here we write upgrading notes for brands. It's a team effort to make them as
+straightforward as possible.
+ 
+### Added
+
+### Changed
+ 
+### Fixed
+
+
+## [1.2] - yyyy-mm-dd
+
+Here we write upgrading notes for brands. It's a team effort to make them as
+straightforward as possible.
+
+### Added
+udp on 3x turn off
+
+### Changed
+feed handling
+psm mode detection
+
+### Fixed
+
+## [1.11] - 2023-10-19
+
+Big Text
+
+### Added
+Able to show BIG texts, currently usedfor Weight data
+
+### Changed
+
+### Fixed
+
+## [1.10] - 2023-10-18
+
+Ready to handle 2 weight sensor.
+Version is added to the iot message
+
+### Added
+Ready to handle 2 weight sensor.
+Version is added to the iot message
+
+### Changed
+
+### Fixed
+ 
+## [1.0] - 2023-03-15
+  
+Initial upload.
+ 
+### Added
+ - Initial upload.
+
+
+### Changed
+  
+
+### Fixed
+ 
