@@ -7,11 +7,12 @@ app = Flask(__name__)
 def open_door():
     boardID = request.args.get('boardID')
     doorID = request.args.get('doorID')
+    simID = request.args.get('simID')
     if not boardID or not doorID:
         return jsonify({"error": "Missing boardID or doorID"}), 400
 
     inputvar = f"{boardID},{doorID}"
-    udp = UDPSender()
+    udp = UDPSender(simID)
     try:
         udp.close()
     except:
