@@ -12,12 +12,12 @@ def open_door():
         return jsonify({"error": "Missing boardID or doorID"}), 400
 
     inputvar = f"{boardID},{doorID}"
-    udp = UDPSender(simID)
+    udp = UDPSender()
     try:
         udp.close()
     except:
         pass
-    udp.open(boardID)
+    udp.open(simID)
     udp.send(command="Open Door", inputvar=inputvar)
     udp.close()
     return jsonify({"status": "success"}), 200
