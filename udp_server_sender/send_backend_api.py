@@ -3,7 +3,7 @@ from sendPackage import UDPSender
 
 app = Flask(__name__)
 
-@app.route('/open_door', methods=['POST'])
+@app.route('/open_door', methods=['GET'])
 def open_door():
     boardID = request.args.get('boardID')
     doorID = request.args.get('doorID')
