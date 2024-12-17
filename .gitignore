@@ -11,3 +11,4 @@ PongBytes
 *.bin
 *dev*.json
 *prod*.json
+*.db

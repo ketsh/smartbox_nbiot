@@ -11,7 +11,7 @@ project_id = "beescaled-dev"
 
 # FOR TESTING, UNCOMMENT IT
 credentials = service_account.Credentials.from_service_account_file(
-    "../key/beescaled-dev-8c00249da18e.json", scopes=["https://www.googleapis.com/auth/cloud-platform"],
+    "./key/beescaled-dev-8c00249da18e.json", scopes=["https://www.googleapis.com/auth/cloud-platform"],
 )
 client = Client(credentials=credentials, project=project_id)
 

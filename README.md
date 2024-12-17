@@ -22,3 +22,4 @@ sudo a2enmod wsgi
 
 sudo systemctl restart apache2
 
+We ran it on /var/www
