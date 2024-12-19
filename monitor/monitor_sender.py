@@ -1,6 +1,7 @@
 import requests
 import json
 import subprocess
+import argparse
 
 # Function to get free memory in MB
 def get_free_memory():
@@ -14,6 +15,11 @@ def get_free_memory():
 def is_process_running(process_name):
     result = subprocess.run(['pgrep', '-f', process_name], stdout=subprocess.PIPE)
     return result.returncode == 0
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description='Send system data to a specified endpoint.')
+parser.add_argument('rack_id', type=str, help='The rack ID to be used in the URL')
+args = parser.parse_args()
 
 # Get memory values
 available_memory, free_memory = get_free_memory()
@@ -35,7 +41,7 @@ data = {
 }
 
 # Send the data to the endpoint
-url = "http://report.mehter.hu:81/api/data/999"
+url = f"http://report.mehter.hu:81/api/data/{args.rack_id}"
 headers = {'Content-Type': 'application/json'}
 response = requests.post(url, headers=headers, data=json.dumps(data))
 
