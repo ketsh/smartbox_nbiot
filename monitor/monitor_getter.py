@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
 import sqlite3
 import datetime
+import os
 
 app = Flask(__name__)
+#app.config['APPLICATION_ROOT'] = '/api'
+db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 
 # Initialize the database
 def init_db():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS records (
@@ -21,7 +24,7 @@ def init_db():
 
 # Insert data into the database
 def insert_data(rack_id, data):
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     timestamp = datetime.datetime.now().isoformat()
     for key, value in data.items():
@@ -49,7 +52,7 @@ def get_data():
     if not rack_id or not key:
         return jsonify({"error": "Missing rack_id or key"}), 400
 
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     five_minutes_ago = (datetime.datetime.now() - datetime.timedelta(minutes=5)).isoformat()
@@ -69,6 +72,6 @@ def get_data():
     else:
         return jsonify({"value": "-"}), 200
 
-if __name__ == '__main__':
-    init_db()
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    init_db()
+#    app.run(debug=True)
