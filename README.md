@@ -23,3 +23,37 @@ sudo a2enmod wsgi
 sudo systemctl restart apache2
 
 We ran it on /var/www
+
+
+
+# Installing new packages in venv
+
+cd /var/www/smartbox_nbiot
+source venv/bin/activate
+pip3 install -r requirements.txt
+cp -R venv /var/www/smartbox_nbiot/monitor
+
+# Creaing new apache2 config
+cp /etc/apache2/sites-available/smartbox_nbiot_monitor.conf /etc/apache2/sites-available/smartbox_nbiot_dashboard.conf
+nano /etc/apache2/sites-available/smartbox_nbiot_dashboard.conf
+--set up (new ports, patsh ,...)
+a2ensite smartbox_nbiot_dashboard.conf
+
+Adding ports
+nano /etc/apache2/ports.conf
+--add Listen 8050
+
+ufw allow 8050
+ufw reload
+
+reload apache2
+systemctl reload apache2
+systemctl restart apache2
+
+Setting up permissions
+chmod -R 755 /var/www/smartbox_nbiot
+chown -R www-data:www-data /var/www/smartbox_nbiot
+
+Check config
+apachectl configtest
+
