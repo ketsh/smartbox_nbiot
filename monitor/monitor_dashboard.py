@@ -3,9 +3,15 @@ import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
 import requests
+from dash.dependencies import Input, Output, State
 
-# List of rack IDs to monitor
-rack_ids = ["bzAi1DPflIKzg75ipRF3", "LCFEL7NLIqFX4Cw6GQit",  "U2nDDxvRaLm6BNiLhqi6", "3o3ZcwEuKJ7aM0i5g7RY"]
+# Dictionary of rack IDs and their names
+rack_info = {
+    "bzAi1DPflIKzg75ipRF3": "David Graz Teszt HA controller",
+    "LCFEL7NLIqFX4Cw6GQit": "Locker Astoria (Controller)",
+    "U2nDDxvRaLm6BNiLhqi6": "Ford - M3",
+    "3o3ZcwEuKJ7aM0i5g7RY": "Akvárium Klub Csomagmegőrző"
+}
 
 # Function to get process status for a given rack ID
 def get_process_status(rack_id):
@@ -19,9 +25,9 @@ def get_process_status(rack_id):
 
 # Fetch process status for all rack IDs
 data = []
-for rack_id in rack_ids:
+for rack_id, name in rack_info.items():
     status = get_process_status(rack_id)
-    status['rack_id'] = rack_id
+    status['rack_id'] = f"{name} ({rack_id})"
     data.append(status)
 
 # Create Dash application
@@ -29,6 +35,12 @@ app = dash.Dash(__name__)
 
 # Define the layout of the app
 app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
+])
+
+# Define the report layout
+report_layout = html.Div([
     html.H1("Rack Process Status Report"),
     dash_table.DataTable(
         id='status-table',
@@ -56,10 +68,25 @@ app.layout = html.Div([
     )
 ])
 
+# Define the access denied layout
+access_denied_layout = html.Div([
+    html.H1("Access Denied")
+])
+
+# Update the page content based on the URL
+@app.callback(Output('page-content', 'children'),
+              [Input('url', 'search')])
+def display_page(search):
+    from urllib.parse import parse_qs
+    query_params = parse_qs(search[1:])
+    api_key = query_params.get('api_key', [None])[0]
+    if api_key == "J7r4Z2j1JvJj4Z5DQ0bM":
+        return report_layout
+    else:
+        return access_denied_layout
 
 # Expose server for WSGI
 server = app.server
 
 if __name__ == "__main__":
     app.run_server(debug=True, port=8050)
-
