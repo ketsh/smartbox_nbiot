@@ -5,18 +5,18 @@ import dash_html_components as html
 import requests
 from dash.dependencies import Input, Output, State
 
-# Dictionary of rack IDs and their names
+# Dictionary of rack IDs, their names, and tzadd values
 rack_info = {
-    "bzAi1DPflIKzg75ipRF3": "David Graz Teszt HA controller",
-    "LCFEL7NLIqFX4Cw6GQit": "Locker Astoria (Controller)",
-    "U2nDDxvRaLm6BNiLhqi6": "Ford - M3",
-    "3o3ZcwEuKJ7aM0i5g7RY": "Akvárium Klub Csomagmegőrző"
+    "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 0},
+    "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 60},
+    "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 0},
+    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 0}
 }
 
 # Function to get process status for a given rack ID
-def get_process_status(rack_id):
+def get_process_status(rack_id, tzadd):
     url = f"http://report.mehter.hu:81/api/process_status"
-    params = {'rack_id': rack_id}
+    params = {'rack_id': rack_id, 'tzadd': tzadd}
     response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json()
@@ -25,9 +25,9 @@ def get_process_status(rack_id):
 
 # Fetch process status for all rack IDs
 data = []
-for rack_id, name in rack_info.items():
-    status = get_process_status(rack_id)
-    status['rack_id'] = f"{name} ({rack_id})"
+for rack_id, info in rack_info.items():
+    status = get_process_status(rack_id, info['tzadd'])
+    status['rack_id'] = f"{info['name']} ({rack_id})"
     data.append(status)
 
 # Create Dash application

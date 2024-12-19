@@ -72,16 +72,19 @@ def get_data():
     else:
         return jsonify({"value": "NO"}), 200
 
+
 @app.route('/api/process_status', methods=['GET'])
 def get_process_status():
     rack_id = request.args.get('rack_id')
+    tzadd = request.args.get('tzadd', default=0, type=int)
+
     if not rack_id:
         return jsonify({"error": "Missing rack_id"}), 400
 
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    five_minutes_ago = (datetime.datetime.now() - datetime.timedelta(minutes=5)).isoformat()
+    five_minutes_ago = (datetime.datetime.now() - datetime.timedelta(minutes=5 + tzadd)).isoformat()
 
     cursor.execute('''
         SELECT key, value FROM records

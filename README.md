@@ -57,3 +57,12 @@ chown -R www-data:www-data /var/www/smartbox_nbiot
 Check config
 apachectl configtest
 
+
+
+# Deploying to PROD
+Deploy Infrastructure through Remote admin
+Check if it works:
+python3 /home/konyvlada/smartbox_infra/monitor_py/monitor_sender.py LCFEL7NLIqFX4Cw6GQit
+
+crontab -l
+*/5 * * * * python3 /home/konyvlada/smartbox_infra/monitor_py/monitor_sender.py LCFEL7NLIqFX4Cw6GQit &
