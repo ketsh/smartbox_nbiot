@@ -19,18 +19,19 @@ def is_process_running(process_name):
 available_memory, free_memory = get_free_memory()
 
 # Check if the processes are running
-process_status = {
-    "firebaseremoteadmin.py": "OK" if is_process_running("firebaseremoteadmin.py") else "NO",
-    "smartbox.py": "OK" if is_process_running("smartbox.py") else "NO",
-    "controller_handler.py": "OK" if is_process_running("controller_handler.py") else "NO",
-    "firebase_main.py": "OK" if is_process_running("firebase_main.py") else "NO"
-}
+ps_firebaseremoteadmin = "OK" if is_process_running("firebaseremoteadmin.py") else "NO"
+ps_smartbox = "OK" if is_process_running("smartbox.py") else "NO"
+ps_controller_handler = "OK" if is_process_running("controller_handler.py") else "NO"
+ps_firebase_main = "OK" if is_process_running("firebase_main.py") else "NO"
 
 # Prepare the data to be sent
 data = {
     "available_memory": available_memory,
     "free_memory": free_memory,
-    "process_status": process_status
+    "ps_firebaseremoteadmin": ps_firebaseremoteadmin,
+    "ps_smartbox": ps_smartbox,
+    "ps_controller_handler": ps_controller_handler,
+    "ps_firebase_main": ps_firebase_main
 }
 
 # Send the data to the endpoint
