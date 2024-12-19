@@ -72,6 +72,30 @@ def get_data():
     else:
         return jsonify({"value": "NO"}), 200
 
+@app.route('/api/process_status', methods=['GET'])
+def get_process_status():
+    rack_id = request.args.get('rack_id')
+    if not rack_id:
+        return jsonify({"error": "Missing rack_id"}), 400
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    five_minutes_ago = (datetime.datetime.now() - datetime.timedelta(minutes=5)).isoformat()
+
+    cursor.execute('''
+        SELECT key, value FROM records
+        WHERE rack_id = ? AND key LIKE 'ps_%' AND timestamp >= ?
+        ORDER BY timestamp DESC
+    ''', (rack_id, five_minutes_ago))
+
+    results = cursor.fetchall()
+    conn.close()
+
+    process_status = {key: value for key, value in results}
+
+    return jsonify(process_status), 200
+
 #if __name__ == '__main__':
 #    init_db()
 #    app.run(debug=True)
