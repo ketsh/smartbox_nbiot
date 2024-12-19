@@ -70,7 +70,7 @@ def get_data():
     if result:
         return jsonify({"value": result[0]}), 200
     else:
-        return jsonify({"value": "-"}), 200
+        return jsonify({"value": "NO"}), 200
 
 #if __name__ == '__main__':
 #    init_db()

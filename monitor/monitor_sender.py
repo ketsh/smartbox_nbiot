@@ -18,8 +18,13 @@ def is_process_running(process_name):
 # Get memory values
 available_memory, free_memory = get_free_memory()
 
-# Check if the process is running
-process_status = "OK" if is_process_running("firebaseremoteadmin.py") else "NO"
+# Check if the processes are running
+process_status = {
+    "firebaseremoteadmin.py": "OK" if is_process_running("firebaseremoteadmin.py") else "NO",
+    "smartbox.py": "OK" if is_process_running("smartbox.py") else "NO",
+    "controller_handler.py": "OK" if is_process_running("controller_handler.py") else "NO",
+    "firebase_main.py": "OK" if is_process_running("firebase_main.py") else "NO"
+}
 
 # Prepare the data to be sent
 data = {
