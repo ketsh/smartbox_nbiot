@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 # Dictionary of rack IDs, their names, and tzadd values
 rack_info = {
     "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 0},
-    "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 60},
+    "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 1},
     "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 0},
     "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 1}
 }
