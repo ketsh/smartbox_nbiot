@@ -35,7 +35,7 @@ def fetch_data():
             'rack_id': f"{info['name']} ({rack_id})",
             **filtered_status,
             'memory_available_rate': float(status.get('memory_available_rate', 0)),
-            'sda2_usage': float(status.get('sda2_usage', 0))
+            'sda2_usage': 100-float(status.get('sda2_usage', 0))
         }
         data.append(filtered_status)
     return data
@@ -60,10 +60,10 @@ def data_bars(column):
             'background': (
                 """
                     linear-gradient(90deg,
-                    #FF0000 0%,
-                    #FF0000 {max_bound_percentage}%,
+                    #00FF00 0%,
                     #00FF00 {max_bound_percentage}%,
-                    #00FF00 100%)
+                    #FF0000 {max_bound_percentage}%,
+                    #FF0000 100%)
                 """.format(max_bound_percentage=max_bound_percentage)
             ),
             'paddingBottom': 2,
