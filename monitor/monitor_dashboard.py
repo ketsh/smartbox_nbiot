@@ -60,16 +60,46 @@ def data_bars(column):
             'background': (
                 """
                     linear-gradient(90deg,
-                    #0000FF 0%,
-                    #0000FF {max_bound_percentage}%,
+                    #FF0000 0%,
                     #FF0000 {max_bound_percentage}%,
-                    #FF0000 100%)
+                    #00FF00 {max_bound_percentage}%,
+                    #00FF00 100%)
                 """.format(max_bound_percentage=max_bound_percentage)
             ),
             'paddingBottom': 2,
             'paddingTop': 2
         })
 
+    return styles
+
+# Function to create conditional formatting for ps_% columns
+def ps_column_styles(columns):
+    styles = []
+    for col in columns:
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} = "OK"'.format(col),
+                'column_id': col
+            },
+            'backgroundColor': '#00FF00',
+            'color': 'white'
+        })
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} = "NO"'.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'red',
+            'color': 'white'
+        })
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} = ""'.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'yellow',
+            'color': 'black'
+        })
     return styles
 
 # Create Dash application
@@ -85,6 +115,7 @@ app.layout = html.Div([
 
 # Define the report layout
 def report_layout(data):
+    columns = [col for col in data[0].keys() if col.startswith('ps_')]
     return html.Div([
         html.H1("Rack Process Status Report"),
         dash_table.DataTable(
@@ -93,7 +124,8 @@ def report_layout(data):
             data=data,
             style_data_conditional=(
                 data_bars('memory_available_rate') +
-                data_bars('sda2_usage')
+                data_bars('sda2_usage') +
+                ps_column_styles(columns)
             )
         )
     ])
