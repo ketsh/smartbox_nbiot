@@ -33,8 +33,8 @@ def fetch_data():
         filtered_status = {
             'rack_id': f"{info['name']} ({rack_id})",
             **filtered_status,
-            'memory_available_rate': status.get('memory_available_rate', 'N/A'),
-            'sda2_usage': status.get('sda2_usage', 'N/A')
+            'memory_available_rate': float(status.get('memory_available_rate', 0)),
+            'sda2_usage': float(status.get('sda2_usage', 0))
         }
         data.append(filtered_status)
     return data
