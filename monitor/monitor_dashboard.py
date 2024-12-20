@@ -29,12 +29,13 @@ def fetch_data():
     data = []
     for rack_id, info in rack_info.items():
         status = get_process_status(rack_id, info['tzadd'])
-        status = {
+        filtered_status = {k: v for k, v in status.items() if k.startswith('ps_')}
+        filtered_status.update({
             'rack_id': f"{info['name']} ({rack_id})",
             'memory_available_rate': status.get('memory_available_rate', 'N/A'),
             'sda2_usage': status.get('sda2_usage', 'N/A')
-        }
-        data.append(status)
+        })
+        data.append(filtered_status)
     return data
 
 # Create Dash application
