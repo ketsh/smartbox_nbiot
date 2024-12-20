@@ -12,3 +12,4 @@ PongBytes
 *dev*.json
 *prod*.json
 *.db
+*.flag

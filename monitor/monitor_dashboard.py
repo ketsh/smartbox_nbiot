@@ -6,6 +6,7 @@ import requests
 from dash.dependencies import Input, Output, State
 import datetime
 import pandas as pd
+import os
 
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
 rack_info = {
@@ -129,6 +130,15 @@ def rack_id_styles():
         'color': 'black'
     }]
 
+# Function to check if the sms_sent.flag file exists
+def check_sms_flag():
+    return os.path.exists('sms_sent.flag')
+
+# Function to remove the sms_sent.flag file
+def remove_sms_flag():
+    if os.path.exists('sms_sent.flag'):
+        os.remove('sms_sent.flag')
+
 # Create Dash application
 app = dash.Dash(__name__)
 
@@ -143,6 +153,7 @@ app.layout = html.Div([
             html.Span("OK - Non used", style={'backgroundColor': 'grey', 'color': 'white', 'padding': '2px 5px'})
         ], style={'marginBottom': '20px'})
     ]),
+    html.Button('SMS Alert sent OUT - clear status', id='sms-button', n_clicks=0, disabled=not check_sms_flag()),
     dcc.Location(id='url', refresh=False),
     dcc.Interval(id='interval-component', interval=5*60*1000, n_intervals=0),
     html.Div(id='last-refresh', style={'fontSize': 20, 'marginBottom': 20}),
@@ -188,6 +199,16 @@ def display_page(search, n_intervals):
         return report_layout(data), last_refresh
     else:
         return access_denied_layout, ""
+
+# Callback to handle SMS button click
+@app.callback(
+    Output('sms-button', 'disabled'),
+    [Input('sms-button', 'n_clicks')]
+)
+def handle_sms_button_click(n_clicks):
+    if n_clicks > 0:
+        remove_sms_flag()
+    return not check_sms_flag()
 
 # Expose server for WSGI
 server = app.server
