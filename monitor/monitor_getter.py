@@ -88,7 +88,7 @@ def get_process_status():
 
     cursor.execute('''
         SELECT key, value FROM records
-        WHERE rack_id = ? AND key LIKE 'ps_%' AND timestamp >= ?
+        WHERE rack_id = ? AND timestamp >= ?
         ORDER BY timestamp DESC
     ''', (rack_id, five_minutes_ago))
 
