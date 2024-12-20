@@ -61,8 +61,8 @@ def data_bars(column):
             'background': (
                 """
                     linear-gradient(90deg,
-                    #cf0000 0%,
-                    #cf0000 {max_bound_percentage}%,
+                    #0020d0 0%,
+                    #0020d0 {max_bound_percentage}%,
                     #53a900 {max_bound_percentage}%,
                     #53a900 100%)
                 """.format(max_bound_percentage=max_bound_percentage)
