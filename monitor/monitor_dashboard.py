@@ -32,8 +32,7 @@ def fetch_data():
         status = {
             'rack_id': f"{info['name']} ({rack_id})",
             'memory_available_rate': status.get('memory_available_rate', 'N/A'),
-            'sda2_usage': status.get('sda2_usage', 'N/A'),
-            **status
+            'sda2_usage': status.get('sda2_usage', 'N/A')
         }
         data.append(status)
     return data
