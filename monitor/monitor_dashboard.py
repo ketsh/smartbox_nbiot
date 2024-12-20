@@ -5,6 +5,7 @@ import dash_html_components as html
 import requests
 from dash.dependencies import Input, Output, State
 import datetime
+import pandas as pd
 
 # Dictionary of rack IDs, their names, and tzadd values
 rack_info = {
@@ -39,6 +40,42 @@ def fetch_data():
         data.append(filtered_status)
     return data
 
+# Function to create data bars
+def data_bars(df, column):
+    n_bins = 100
+    bounds = [i * (1.0 / n_bins) for i in range(n_bins + 1)]
+    ranges = [
+        ((df[column].max() - df[column].min()) * i) + df[column].min()
+        for i in bounds
+    ]
+    styles = []
+    for i in range(1, len(bounds)):
+        min_bound = ranges[i - 1]
+        max_bound = ranges[i]
+        max_bound_percentage = bounds[i] * 100
+        styles.append({
+            'if': {
+                'filter_query': (
+                    '{{{column}}} >= {min_bound}' +
+                    (' && {{{column}}} < {max_bound}' if (i < len(bounds) - 1) else '')
+                ).format(column=column, min_bound=min_bound, max_bound=max_bound),
+                'column_id': column
+            },
+            'background': (
+                """
+                    linear-gradient(90deg,
+                    #0074D9 0%,
+                    #0074D9 {max_bound_percentage}%,
+                    white {max_bound_percentage}%,
+                    white 100%)
+                """.format(max_bound_percentage=max_bound_percentage)
+            ),
+            'paddingBottom': 2,
+            'paddingTop': 2
+        })
+
+    return styles
+
 # Create Dash application
 app = dash.Dash(__name__)
 
@@ -52,41 +89,17 @@ app.layout = html.Div([
 
 # Define the report layout
 def report_layout(data):
+    df = pd.DataFrame(data)
     return html.Div([
         html.H1("Rack Process Status Report"),
         dash_table.DataTable(
             id='status-table',
             columns=[{"name": i, "id": i} for i in data[0].keys()],
             data=data,
-            style_data_conditional=[
-                {
-                    'if': {
-                        'filter_query': '{' + col + '} = "OK"',
-                        'column_id': col
-                    },
-                    'backgroundColor': 'green',
-                    'color': 'white'
-                } for col in data[0].keys() if col != 'rack_id'
-            ] + [
-                {
-                    'if': {
-                        'filter_query': '{' + col + '} = "NO"',
-                        'column_id': col
-                    },
-                    'backgroundColor': 'red',
-                    'color': 'white'
-                } for col in data[0].keys() if col != 'rack_id'
-            ] + [
-                {
-                    'if': {
-                        'filter_query': '{' + col + '} >= 0 && {' + col + '} <= 100',
-                        'column_id': col
-                    },
-                    'backgroundColor': 'rgba(255, 0, 0, {' + col + '} / 100)',
-                    'color': 'white',
-                    'type': 'bar'
-                } for col in ['memory_available_rate', 'sda2_usage']
-            ]
+            style_data_conditional=(
+                data_bars(df, 'memory_available_rate') +
+                data_bars(df, 'sda2_usage')
+            )
         )
     ])
 
