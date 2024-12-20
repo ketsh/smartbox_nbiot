@@ -41,17 +41,13 @@ def fetch_data():
     return data
 
 # Function to create data bars
-def data_bars(df, column):
+def data_bars(column):
     n_bins = 100
     bounds = [i * (1.0 / n_bins) for i in range(n_bins + 1)]
-    ranges = [
-        ((df[column].max() - df[column].min()) * i) + df[column].min()
-        for i in bounds
-    ]
     styles = []
     for i in range(1, len(bounds)):
-        min_bound = ranges[i - 1]
-        max_bound = ranges[i]
+        min_bound = (i - 1) * (100 / n_bins)
+        max_bound = i * (100 / n_bins)
         max_bound_percentage = bounds[i] * 100
         styles.append({
             'if': {
@@ -89,7 +85,6 @@ app.layout = html.Div([
 
 # Define the report layout
 def report_layout(data):
-    df = pd.DataFrame(data)
     return html.Div([
         html.H1("Rack Process Status Report"),
         dash_table.DataTable(
@@ -97,8 +92,8 @@ def report_layout(data):
             columns=[{"name": i, "id": i} for i in data[0].keys()],
             data=data,
             style_data_conditional=(
-                data_bars(df, 'memory_available_rate') +
-                data_bars(df, 'sda2_usage')
+                data_bars('memory_available_rate') +
+                data_bars('sda2_usage')
             )
         )
     ])
