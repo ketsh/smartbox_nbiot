@@ -29,9 +29,12 @@ def fetch_data():
     data = []
     for rack_id, info in rack_info.items():
         status = get_process_status(rack_id, info['tzadd'])
-        status['rack_id'] = f"{info['name']} ({rack_id})"
-        status['memory_available_rate'] = status.get('memory_available_rate', 'N/A')
-        status['sda2_usage'] = status.get('sda2_usage', 'N/A')
+        status = {
+            'rack_id': f"{info['name']} ({rack_id})",
+            'memory_available_rate': status.get('memory_available_rate', 'N/A'),
+            'sda2_usage': status.get('sda2_usage', 'N/A'),
+            **status
+        }
         data.append(status)
     return data
 
@@ -72,6 +75,16 @@ def report_layout(data):
                     'backgroundColor': 'red',
                     'color': 'white'
                 } for col in data[0].keys() if col != 'rack_id'
+            ] + [
+                {
+                    'if': {
+                        'filter_query': '{' + col + '} >= 0 && {' + col + '} <= 100',
+                        'column_id': col
+                    },
+                    'backgroundColor': 'rgba(255, 0, 0, {' + col + '} / 100)',
+                    'color': 'white',
+                    'type': 'bar'
+                } for col in ['memory_available_rate', 'sda2_usage']
             ]
         )
     ])
