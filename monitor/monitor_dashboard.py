@@ -12,7 +12,8 @@ rack_info = {
     "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 1},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2},
     "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 2},
-    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2}
+    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2},
+    "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2}
 }
 
 # Function to get process status for a given rack ID
