@@ -101,7 +101,7 @@ def get_process_status():
 
 @app.route('/api/sms_callback', methods=['GET'])
 def sms_callback():
-    return jsonify({"message": "Data inserted successfully"}), 200
+    return jsonify({"message": "SMS Sent"}), 200
 
 
 #if __name__ == '__main__':
