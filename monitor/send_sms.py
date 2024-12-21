@@ -53,9 +53,7 @@ def check_and_notify():
 
 # Main loop to periodically check the process status
 def main():
-    while True:
-        check_and_notify()
-        time.sleep(5 * 60)  # Wait for 5 minutes before checking again
+    check_and_notify()
 
 if __name__ == "__main__":
     main()
