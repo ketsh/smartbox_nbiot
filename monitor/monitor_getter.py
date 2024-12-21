@@ -99,6 +99,11 @@ def get_process_status():
 
     return jsonify(process_status), 200
 
+@app.route('/api/sms_callback', methods=['GET'])
+def sms_callback():
+    return jsonify({"message": "Data inserted successfully"}), 200
+
+
 #if __name__ == '__main__':
 #    init_db()
 #    app.run(debug=True)
