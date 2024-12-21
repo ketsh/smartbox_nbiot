@@ -29,12 +29,11 @@ def send_sms(message):
     payload = {
         'message': message,
         'number': '36208861084',
-        'senderid': 'TesztFelado',
         'key': 'ddc6a6ad2962963d40eaf51e3b9c5e70'
     }
     response = requests.post(sms_url, data=payload, headers=headers)
     print(response.status_code)
-    print(response.content)
+    print(response.text)
     if response.status_code == 200:
         with open(flag_file, 'w') as f:
             f.write('SMS sent')
