@@ -22,9 +22,15 @@ def get_process_status(rack_id, tzadd):
 
 # Function to send SMS and create a flag file
 def send_sms(message):
-    flag_file = 'sms_sent.flag'
-    if os.path.exists(flag_file):
-        return False  # Do not send SMS if flag file exists
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) FROM sms_status WHERE sms_sent = 1
+    ''')
+    result = cursor.fetchone()
+    if result[0] > 0:
+        conn.close()
+        return False  # Do not send SMS if a record exists in the sms_status table
 
     sms_url = "https://api.bipkampany.hu/sendsms"
     random_hash = generate_random_hash()
