@@ -21,27 +21,6 @@ rack_info = {
     "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]}
 }
 
-# Function to check if an SMS record exists in the sms_status table
-def check_sms_flag():
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT COUNT(*) FROM sms_status WHERE sms_sent = 1
-    ''')
-    result = cursor.fetchone()
-    conn.close()
-    return result[0] > 0
-
-# Function to remove the SMS record from the sms_status table
-def remove_sms_flag():
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute('''
-        DELETE FROM sms_status WHERE sms_sent = 1
-    ''')
-    conn.commit()
-    conn.close()
-
 # Function to get process status for a given rack ID
 def get_process_status(rack_id, tzadd):
     url = f"http://report.mehter.hu:81/api/process_status"
@@ -154,6 +133,28 @@ def rack_id_styles():
         'backgroundColor': 'white',
         'color': 'black'
     }]
+
+
+# Function to check if an SMS record exists in the sms_status table
+def check_sms_flag():
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) FROM sms_status WHERE sms_sent = 1
+    ''')
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] > 0
+
+# Function to remove the SMS record from the sms_status table
+def remove_sms_flag():
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+        DELETE FROM sms_status WHERE sms_sent = 1
+    ''')
+    conn.commit()
+    conn.close()
 
 # Create Dash application
 app = dash.Dash(__name__)
