@@ -155,15 +155,6 @@ def rack_id_styles():
         'color': 'black'
     }]
 
-# Function to check if the sms_sent.flag file exists
-def check_sms_flag():
-    return os.path.exists('sms_sent.flag')
-
-# Function to remove the sms_sent.flag file
-def remove_sms_flag():
-    if os.path.exists('sms_sent.flag'):
-        os.remove('sms_sent.flag')
-
 # Create Dash application
 app = dash.Dash(__name__)
 
