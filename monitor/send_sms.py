@@ -3,6 +3,12 @@ import os
 import time
 import datetime
 from monitor_dashboard import rack_info
+import random
+import string
+import sqlite3
+
+db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
+
 
 # Function to get process status for a given rack ID
 def get_process_status(rack_id, tzadd):
@@ -21,6 +27,7 @@ def send_sms(message):
         return False  # Do not send SMS if flag file exists
 
     sms_url = "https://api.bipkampany.hu/sendsms"
+    random_hash = generate_random_hash()
     headers = {
         'Authorization': 'AccessKey ddc6a6ad2962963d40eaf51e3b9c5e70',
         'Accept': 'application/json',
@@ -28,15 +35,26 @@ def send_sms(message):
     }
     payload = {
         'message': message,
-        'number': '36208861084',
-        'key': 'ddc6a6ad2962963d40eaf51e3b9c5e70'
+        'number': 4367761649272,
+        'key': 'ddc6a6ad2962963d40eaf51e3b9c5e70',
+        'referenceid': random_hash,
+        'type': "unicode",
+        'format': "json",
+        'callback': None
     }
     response = requests.post(sms_url, data=payload, headers=headers)
     print(response.status_code)
     print(response.text)
     if response.status_code == 200:
-        with open(flag_file, 'w') as f:
-            f.write('SMS sent')
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        timestamp = datetime.datetime.now().isoformat()
+        cursor.execute('''
+            INSERT INTO sms_status (timestamp, sms_sent)
+            VALUES (?, ?)
+        ''', (timestamp, 1))
+        conn.commit()
+        conn.close()
         return True
     return False
 
@@ -47,9 +65,17 @@ def check_and_notify():
         for key in info['keys']:
             if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
                 rack_prefix = info['name'].split(':')[0]
-                message = f"Alert: {rack_prefix} ({rack_id}) - {key} is {status.get(key)}"
+                message = f"Alert:{rack_prefix} {key} error"
                 print(message)
                 send_sms(message)
+                break
+
+
+
+def generate_random_hash():
+    # Generate a random 12-character alphanumeric string
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+
 
 # Main loop to periodically check the process status
 def main():
