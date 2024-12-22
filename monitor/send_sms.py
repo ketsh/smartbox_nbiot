@@ -5,6 +5,10 @@ import datetime
 from monitor_dashboard import rack_info
 import random
 import string
+import sqlite3
+
+db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
+
 
 # Function to get process status for a given rack ID
 def get_process_status(rack_id, tzadd):
@@ -42,8 +46,15 @@ def send_sms(message):
     print(response.status_code)
     print(response.text)
     if response.status_code == 200:
-        with open(flag_file, 'w') as f:
-            f.write('SMS sent')
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        timestamp = datetime.datetime.now().isoformat()
+        cursor.execute('''
+            INSERT INTO sms_status (timestamp, sms_sent)
+            VALUES (?, ?)
+        ''', (timestamp, 1))
+        conn.commit()
+        conn.close()
         return True
     return False
 
