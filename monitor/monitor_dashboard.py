@@ -179,7 +179,7 @@ app.layout = html.Div([
 
 # Define the report layout
 def report_layout(data):
-    columns = ['rack_id'] + [col for col in data[0].keys() if col.startswith('ps_')] + ['memory_available_rate', 'sda2_usage']
+    columns = ['rack_id'] + [col for col in data[0].keys() if col.startswith('ps_') or col.startswith('pid_')] + ['memory_available_rate', 'sda2_usage']
     return html.Div([
         html.H1("Rack Process Status Report"),
         dash_table.DataTable(
