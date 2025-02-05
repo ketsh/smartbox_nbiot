@@ -57,7 +57,11 @@ chown -R www-data:www-data /var/www/smartbox_nbiot
 Check config
 apachectl configtest
 
+# Git pull new changes
 
+cd /var/www/smartbox_nbiot
+git pull
+systemctl restart apache2
 
 # Deploying to PROD
 Deploy Infrastructure through Remote admin
@@ -66,3 +70,9 @@ python3 /home/konyvlada/smartbox_infra/monitor_py/monitor_sender.py LCFEL7NLIqFX
 
 crontab -l
 */5 * * * * python3 /home/konyvlada/smartbox_infra/monitor_py/monitor_sender.py LCFEL7NLIqFX4Cw6GQit &
+
+# Checking DB
+
+cd /var/www/smartbox_nbiot/monitor
+sqlite3 monitor_data.db
+select * from 
