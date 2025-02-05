@@ -14,10 +14,10 @@ db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
 rack_info = {
-    "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 1, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "ps_firefox_process_count", "pid_firefox_running"]},
+    "bzAi1DPflIKzg75ipRF3": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 1, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage"]},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage"]},
     "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
-    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage"]},
+    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "David Graz Teszt HA controller", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "ps_firefox_process_count", "pid_firefox_running"]},
     "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2, "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]}
 }
 
