@@ -75,4 +75,4 @@ crontab -l
 
 cd /var/www/smartbox_nbiot/monitor
 sqlite3 monitor_data.db
-select * from 
+select * from records where rack_id = '3o3ZcwEuKJ7aM0i5g7RY' order by timestamp desc LIMIT 20;
