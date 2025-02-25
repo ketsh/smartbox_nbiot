@@ -18,12 +18,13 @@ rack_info = {
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
     "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
+    "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 2,
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
     "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
-    "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
+
 }
 
 # Function to get process status for a given rack ID
