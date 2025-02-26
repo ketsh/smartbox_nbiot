@@ -144,6 +144,14 @@ def git_column_styles(columns):
             'backgroundColor': 'red',
             'color': 'black'
         })
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} = -100 '.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'white',
+            'color': 'white'
+        })
     return styles
 
 # Function to create conditional formatting for greyed out cells
