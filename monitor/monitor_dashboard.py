@@ -11,7 +11,6 @@ import sqlite3
 
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 
-
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
 rack_info = {
     "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2,
