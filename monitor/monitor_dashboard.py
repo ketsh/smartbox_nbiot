@@ -122,6 +122,14 @@ def git_column_styles(columns):
     for col in columns:
         styles.append({
             'if': {
+                'filter_query': '{{{}}} = -100 '.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'white',
+            'color': 'white'
+        })
+        styles.append({
+            'if': {
                 'filter_query': '{{{}}} = 0'.format(col),
                 'column_id': col
             },
@@ -144,14 +152,6 @@ def git_column_styles(columns):
             'backgroundColor': 'red',
             'color': 'black'
         })
-        styles.append({
-            'if': {
-                'filter_query': '{{{}}} = -100 '.format(col),
-                'column_id': col
-            },
-            'backgroundColor': 'white',
-            'color': 'white'
-        })
     return styles
 
 # Function to create conditional formatting for greyed out cells
@@ -166,7 +166,7 @@ def grey_out_styles(columns, rack_info):
                         'column_id': col
                     },
                     'backgroundColor': 'grey',
-                    'color': 'white'
+                    'color': 'grey'
                 })
     return styles
 
