@@ -14,13 +14,13 @@ db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
 rack_info = {
     "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
     "U2nDDxvRaLm6BNiLhqi6": {"name": "Ford - M3", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage"]},
     "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage"]},
 
@@ -46,7 +46,10 @@ def fetch_data():
             'rack_id': f"{info['name']} ({rack_id})",
             **filtered_status,
             'memory_available_rate': float(status.get('memory_available_rate', 0)),
-            'sda2_usage': 100 - float(status.get('sda2_usage', 0))
+            'sda2_usage': 100 - float(status.get('sda2_usage', 0)),
+            'git_infra_commit_behind': float(status.get('git_infra_commit_behind', 0)),
+            'git_screen_commit_behind': float(status.get('git_screen_commit_behind', 0)),
+            'git_iot_commit_behind': float(status.get('git_iot_commit_behind', 0))
         }
         data.append(filtered_status)
     return data
@@ -184,7 +187,7 @@ app.layout = html.Div([
 
 # Define the report layout
 def report_layout(data):
-    columns = ['rack_id'] + [col for col in data[0].keys() if col.startswith('ps_') or col.startswith('pid_')] + ['memory_available_rate', 'sda2_usage']
+    columns = ['rack_id'] + [col for col in data[0].keys() if col.startswith('ps_') or col.startswith('pid_') or col.startswith('git_')] + ['memory_available_rate', 'sda2_usage']
     return html.Div([
         html.H1("Rack Process Status Report"),
         dash_table.DataTable(
@@ -194,6 +197,9 @@ def report_layout(data):
             style_data_conditional=(
                 data_bars('memory_available_rate') +
                 data_bars('sda2_usage') +
+                data_bars('git_infra_commit_behind') +
+                data_bars('git_screen_commit_behind') +
+                data_bars('git_iot_commit_behind') +
                 ps_column_styles(columns) +
                 grey_out_styles(columns, rack_info) +
                 rack_id_styles()
