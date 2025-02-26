@@ -235,9 +235,9 @@ def report_layout(data):
             style_data_conditional=(
                 data_bars('memory_available_rate') +
                 data_bars('sda2_usage') +
-                git_column_styles('git_infra_commit_behind') +
-                git_column_styles('git_screen_commit_behind') +
-                git_column_styles('git_iot_commit_behind') +
+                git_column_styles(['git_infra_commit_behind',
+                                   'git_screen_commit_behind',
+                                   'git_iot_commit_behind']) +
                 ps_column_styles(columns) +
                 grey_out_styles(columns, rack_info) +
                 rack_id_styles()
