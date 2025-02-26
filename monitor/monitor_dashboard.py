@@ -86,6 +86,7 @@ def data_bars(column):
 
     return styles
 
+
 # Function to create conditional formatting for ps_% columns
 def ps_column_styles(columns):
     styles = []
@@ -112,6 +113,35 @@ def ps_column_styles(columns):
                 'column_id': col
             },
             'backgroundColor': 'yellow',
+            'color': 'black'
+        })
+    return styles
+
+def git_column_styles(columns):
+    styles = []
+    for col in columns:
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} = 0'.format(col),
+                'column_id': col
+            },
+            'backgroundColor': '#FFFFFF',
+            'color': 'black'
+        })
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} < 0'.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'yellow',
+            'color': 'white'
+        })
+        styles.append({
+            'if': {
+                'filter_query': '{{{}}} > 0 '.format(col),
+                'column_id': col
+            },
+            'backgroundColor': 'red',
             'color': 'black'
         })
     return styles
@@ -197,9 +227,9 @@ def report_layout(data):
             style_data_conditional=(
                 data_bars('memory_available_rate') +
                 data_bars('sda2_usage') +
-                data_bars('git_infra_commit_behind') +
-                data_bars('git_screen_commit_behind') +
-                data_bars('git_iot_commit_behind') +
+                git_column_styles('git_infra_commit_behind') +
+                git_column_styles('git_screen_commit_behind') +
+                git_column_styles('git_iot_commit_behind') +
                 ps_column_styles(columns) +
                 grey_out_styles(columns, rack_info) +
                 rack_id_styles()
