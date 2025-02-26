@@ -47,9 +47,9 @@ def fetch_data():
             **filtered_status,
             'memory_available_rate': float(status.get('memory_available_rate', 0)),
             'sda2_usage': 100 - float(status.get('sda2_usage', 0)),
-            'git_infra_commit_behind': float(status.get('git_infra_commit_behind', 0)),
-            'git_screen_commit_behind': float(status.get('git_screen_commit_behind', 0)),
-            'git_iot_commit_behind': float(status.get('git_iot_commit_behind', 0))
+            'git_infra_commit_behind': float(status.get('git_infra_commit_behind')),
+            'git_screen_commit_behind': float(status.get('git_screen_commit_behind')),
+            'git_iot_commit_behind': float(status.get('git_iot_commit_behind'))
         }
         data.append(filtered_status)
     return data
