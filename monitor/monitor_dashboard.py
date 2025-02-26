@@ -122,7 +122,7 @@ def git_column_styles(columns):
     for col in columns:
         styles.append({
             'if': {
-                'filter_query': '{{{col}}} = -100 '.format(col),
+                'filter_query': '{{{}}} = -100 '.format(col),
                 'column_id': col
             },
             'backgroundColor': 'white',
@@ -130,7 +130,7 @@ def git_column_styles(columns):
         })
         styles.append({
             'if': {
-                'filter_query': '{{{col}}} = 0'.format(col),
+                'filter_query': '{{{}}} = 0'.format(col),
                 'column_id': col
             },
             'backgroundColor': '#FFFFFF',
@@ -138,7 +138,7 @@ def git_column_styles(columns):
         })
         styles.append({
             'if': {
-                'filter_query': '{{{col}}} < 0'.format(col),
+                'filter_query': '{{{}}} < 0'.format(col),
                 'column_id': col
             },
             'backgroundColor': 'yellow',
@@ -146,7 +146,7 @@ def git_column_styles(columns):
         })
         styles.append({
             'if': {
-                'filter_query': '{{{col}}} > 0 '.format(col),
+                'filter_query': '{{{}}} > 0 '.format(col),
                 'column_id': col
             },
             'backgroundColor': 'red',
