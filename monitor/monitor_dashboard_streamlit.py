@@ -9,7 +9,7 @@ import os
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 st.set_page_config(layout="wide")
 # update every 5 mins
-st_autorefresh(interval=60 * 1000, key="dataframerefresh")
+st_autorefresh(interval=5 * 60 * 1000, key="dataframerefresh")
 
 
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
