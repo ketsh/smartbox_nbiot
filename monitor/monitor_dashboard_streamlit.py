@@ -48,7 +48,7 @@ def fetch_data():
             'rack_id': f"{info['name']} ({rack_id})",
             **filtered_status,
         }
-        if 'memory_available' in info['keys']:
+        if 'memory_available_rate' in info['keys']:
             filtered_status['memory_available_rate'] = int(status.get('memory_available_rate', 0))
         else:
             filtered_status['memory_available_rate'] = -1
