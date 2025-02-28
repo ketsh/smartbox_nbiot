@@ -69,7 +69,7 @@ cd /var/www/smartbox_nbiot
 git pull 
 ps -ef | grep streamlit
 kill -9 <PID>
-source monitor/start_streamlit.sh &
+source /var/www/smartbox_nbiot/monitor/start_streamlit_app.sh &
 
 # Deploying to PROD
 Deploy Infrastructure through Remote admin
