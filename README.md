@@ -57,11 +57,19 @@ chown -R www-data:www-data /var/www/smartbox_nbiot
 Check config
 apachectl configtest
 
-# Git pull new changes
+# Git pull new changes OLD
 
 cd /var/www/smartbox_nbiot
-git pull
+git pull 
 systemctl restart apache2
+
+# Git pull new changes - streamlit
+
+cd /var/www/smartbox_nbiot
+git pull 
+ps -ef | grep streamlit
+kill -9 <PID>
+source monitor/start_streamlit.sh &
 
 # Deploying to PROD
 Deploy Infrastructure through Remote admin
