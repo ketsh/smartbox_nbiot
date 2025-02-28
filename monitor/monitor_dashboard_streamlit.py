@@ -50,18 +50,28 @@ def fetch_data():
         }
         if 'memory_available' in info['keys']:
             filtered_status['memory_available_rate'] = int(status.get('memory_available_rate', 0))
+        else:
+            filtered_status['memory_available_rate'] = -1
 
         if 'sda2_usage' in info['keys']:
             filtered_status['sda2_usage'] = 100 - int(status.get('sda2_usage', 0))
+        else:
+            filtered_status['sda2_usage'] = -1
 
         if 'git_infra_commit_behind' in info['keys']:
             filtered_status['git_infra_commit_behind'] = int(status.get('git_infra_commit_behind', -100))
+        else:
+            filtered_status['git_infra_commit_behind'] = -1
 
         if 'git_screen_commit_behind' in info['keys']:
             filtered_status['git_screen_commit_behind'] = int(status.get('git_screen_commit_behind', -100))
+        else:
+            filtered_status['git_screen_commit_behind'] = -1
 
         if 'git_iot_commit_behind' in info['keys']:
             filtered_status['git_iot_commit_behind'] = int(status.get('git_iot_commit_behind', -100))
+        else:
+            filtered_status['git_iot_commit_behind'] = -1
 
         data.append(filtered_status)
     return data
@@ -128,7 +138,6 @@ def apply_styles_git(val):
     elif val > 0:
         bgcolor = 'yellow'
         color = 'black'
-
     else:
         bgcolor = 'grey'
         color = 'grey'
