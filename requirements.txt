@@ -8,3 +8,6 @@ requests==2.26.0
 pandas==1.3.3
 numpy==1.24.4
 psutil
+streamlit
+matplotlib
+streamlit_autorefresh
