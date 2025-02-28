@@ -14,10 +14,10 @@ st_autorefresh(interval=5 * 60 * 1000, key="dataframerefresh")
 
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
 rack_info = {
-    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
+    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2,
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_iot_commit_behind"]},
     "U2nDDxvRaLm6BNiLhqi6": {"name": "Szalay - M3 Ford", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "uihZJfQfRc5hgQ57uLWw": {"name": "Szalay - Solymár", "tzadd": 2,
@@ -25,7 +25,7 @@ rack_info = {
     "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind",  "git_iot_commit_behind"]},
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind",  "git_iot_commit_behind"]},
 }
 
 # Function to get process status for a given rack ID
@@ -47,12 +47,22 @@ def fetch_data():
         filtered_status = {
             'rack_id': f"{info['name']} ({rack_id})",
             **filtered_status,
-            'memory_available_rate': int(status.get('memory_available_rate', 0)),
-            'sda2_usage': 100 - int(status.get('sda2_usage', 0)),
-            'git_infra_commit_behind': int(status.get('git_infra_commit_behind', -100)),
-            'git_screen_commit_behind': int(status.get('git_screen_commit_behind', -100)),
-            'git_iot_commit_behind': int(status.get('git_iot_commit_behind', -100))
         }
+        if 'memory_available' in info['keys']:
+            filtered_status['memory_available_rate'] = int(status.get('memory_available_rate', 0))
+
+        if 'sda2_usage' in info['keys']:
+            filtered_status['sda2_usage'] = 100 - int(status.get('sda2_usage', 0))
+
+        if 'git_infra_commit_behind' in info['keys']:
+            filtered_status['git_infra_commit_behind'] = int(status.get('git_infra_commit_behind', -100))
+
+        if 'git_screen_commit_behind' in info['keys']:
+            filtered_status['git_screen_commit_behind'] = int(status.get('git_screen_commit_behind', -100))
+
+        if 'git_iot_commit_behind' in info['keys']:
+            filtered_status['git_iot_commit_behind'] = int(status.get('git_iot_commit_behind', -100))
+
         data.append(filtered_status)
     return data
 
@@ -115,31 +125,39 @@ def apply_styles_git(val):
     if val == 0:
         bgcolor = 'green'
         color = 'white'
-    else:
+    elif val > 0:
         bgcolor = 'yellow'
         color = 'black'
+
+    else:
+        bgcolor = 'grey'
+        color = 'grey'
     return f'background-color: {bgcolor}; color: {color}'
 
 def data_bars(df, column):
-    styles = pd.DataFrame("", index=df.index, columns=df.columns)
-    n_bins = 100
-    bounds = [i * (1.0 / n_bins) for i in range(n_bins + 1)]
-    for i in range(1, len(bounds)):
-        min_bound = (i - 1) * (100 / n_bins)
-        max_bound = i * (100 / n_bins)
-        max_bound_percentage = bounds[i] * 100
-        styles.loc[(df[column] >= min_bound) & (df[column] < max_bound), column] = (
-            f'background: linear-gradient(90deg, #53a900 0%, #53a900 {max_bound_percentage}%, #0020d0 {max_bound_percentage}%, #0020d0 100%); padding-bottom: 2px; padding-top: 2px;'
-        )
-    return styles
+    try:
+        styles = pd.DataFrame("", index=df.index, columns=df.columns)
+        n_bins = 100
+        bounds = [i * (1.0 / n_bins) for i in range(n_bins + 1)]
+        for i in range(1, len(bounds)):
+            min_bound = (i - 1) * (100 / n_bins)
+            max_bound = i * (100 / n_bins)
+            max_bound_percentage = bounds[i] * 100
+            styles.loc[(df[column] >= min_bound) & (df[column] < max_bound), column] = (
+                f'background: linear-gradient(90deg, #53a900 0%, #53a900 {max_bound_percentage}%, #0020d0 {max_bound_percentage}%, #0020d0 100%); padding-bottom: 2px; padding-top: 2px;'
+            )
+        return styles
+    except Exception as e:
+        styles = pd.DataFrame("", index=df.index, columns=df.columns)
+        return styles
 
 df = df.style.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('memory_')]])
 df = df.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('sda')]])
 styled_df = df.applymap(apply_styles, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('ps_')]])
 styled_df = styled_df.applymap(apply_styles_git, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('git_')]])
 
-styled_df = styled_df.apply(data_bars, column='memory_available_rate', axis=None)
-styled_df = styled_df.apply(data_bars, column='sda2_usage', axis=None)
+#styled_df = styled_df.apply(data_bars, column='memory_available_rate', axis=None)
+#styled_df = styled_df.apply(data_bars, column='sda2_usage', axis=None)
 
 
 st.dataframe(styled_df, height=400)
