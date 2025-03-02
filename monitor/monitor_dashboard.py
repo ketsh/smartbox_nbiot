@@ -8,25 +8,10 @@ import datetime
 import pandas as pd
 import os
 import sqlite3
+from monitor_config import rack_info
 
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 
-# Dictionary of rack IDs, their names, tzadd values, and keys to be shown
-rack_info = {
-    "3o3ZcwEuKJ7aM0i5g7RY": {"name": "Akvárium Klub Csomagmegőrző", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
-    "L3L2BQwvrjMJfTcEdADW": {"name": "Gödöllői Városi Könyvtár", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
-    "U2nDDxvRaLm6BNiLhqi6": {"name": "Szalay - M3 Ford", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
-    "uihZJfQfRc5hgQ57uLWw": {"name": "Szalay - Solymár", "tzadd": 2,
-                             "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
-    "bzAi1DPflIKzg75ipRF3": {"name": "David Graz Teszt HA controller", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
-    "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2,
-                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind",  "git_iot_commit_behind"]},
-
-}
 
 # Function to get process status for a given rack ID
 def get_process_status(rack_id, tzadd):

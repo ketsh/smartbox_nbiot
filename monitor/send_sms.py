@@ -2,7 +2,7 @@ import requests
 import os
 import time
 import datetime
-from monitor_dashboard_streamlit import rack_info
+from monitor_config import rack_info
 import random
 import string
 import sqlite3
