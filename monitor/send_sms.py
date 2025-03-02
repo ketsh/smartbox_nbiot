@@ -67,15 +67,22 @@ def send_sms(message):
 # Fetch process status for all rack IDs and send SMS if needed
 def check_and_notify():
     for rack_id, info in rack_info.items():
-        status = get_process_status(rack_id, info['tzadd'])
-        for key in info['keys']:
-            if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
-                rack_prefix = info['name'].split(':')[0]
-                message = f"Alert:{rack_prefix} {key} error"
-                print(message)
-                send_sms(message)
-                break
-
+        if rack_id not in ['bzAi1DPflIKzg75ipRF3']:
+            status = get_process_status(rack_id, info['tzadd'])
+            for key in info['keys']:
+                if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
+                    rack_prefix = info['name'].split(':')[0]
+                    message = f"Alert:{rack_prefix} {key} error"
+                    print(message)
+                    send_sms(message)
+                    break
+                if key =='memory_available_rate':
+                    if int(status.get(key)) < 10:
+                        rack_prefix = info['name'].split(':')[0]
+                        message = f"MEMAlert:{rack_prefix} {key} error"
+                        print(message)
+                        send_sms(message)
+                        break
 
 
 def generate_random_hash():
