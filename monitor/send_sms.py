@@ -77,7 +77,7 @@ def check_and_notify():
                     send_sms(message)
                     break
                 if key =='memory_available_rate':
-                    if int(status.get(key)) < 60:
+                    if int(status.get(key)) < 20:
                         rack_prefix = info['name'].split(':')[0]
                         message = f"MEMAlert:{rack_prefix} {key} error"
                         print(message)
