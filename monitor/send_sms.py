@@ -2,7 +2,7 @@ import requests
 import os
 import time
 import datetime
-from monitor_dashboard import rack_info
+from monitor_dashboard_streamlit import rack_info
 import random
 import string
 import sqlite3
@@ -77,7 +77,7 @@ def check_and_notify():
                     send_sms(message)
                     break
                 if key =='memory_available_rate':
-                    if int(status.get(key)) < 10:
+                    if int(status.get(key)) < 50:
                         rack_prefix = info['name'].split(':')[0]
                         message = f"MEMAlert:{rack_prefix} {key} error"
                         print(message)
