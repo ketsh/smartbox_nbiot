@@ -84,3 +84,6 @@ crontab -l
 cd /var/www/smartbox_nbiot/monitor
 sqlite3 monitor_data.db
 select * from records where rack_id = '3o3ZcwEuKJ7aM0i5g7RY' order by timestamp desc LIMIT 20;
+
+## Getting memory consumption
+select * from records where rack_id = '3o3ZcwEuKJ7aM0i5g7RY' and timestamp between '2025-03-02T16:00' and '2025-03-02T22:00' and key in ( 'available_memory', 'ps_smartbox') order by timestamp desc;
