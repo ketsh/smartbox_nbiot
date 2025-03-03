@@ -144,6 +144,8 @@ def data_bars(df, column):
     except Exception as e:
         styles = pd.DataFrame("", index=df.index, columns=df.columns)
         return styles
+#Drop placeholder record from df
+df = df[df['rack_id'] != 'placeholder']
 
 df = df.style.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('memory_')]])
 df = df.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('sda')]])
