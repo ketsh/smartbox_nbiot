@@ -27,39 +27,38 @@ def get_process_status(rack_id, tzadd):
 def fetch_data():
     data = []
     for rack_id, info in rack_info.items():
-        if rack_id != 'placeholder':
-            status = get_process_status(rack_id, info['tzadd'])
-            filtered_status = {k: v for k, v in status.items() if k in info['keys']}
-            filtered_status = {
-                'rack_id': f"{info['name']} ({rack_id})",
-                **filtered_status,
-            }
-            if 'memory_available_rate' in info['keys']:
-                filtered_status['memory_available_rate'] = int(status.get('memory_available_rate', 0))
-            else:
-                filtered_status['memory_available_rate'] = -1
+        status = get_process_status(rack_id, info['tzadd'])
+        filtered_status = {k: v for k, v in status.items() if k in info['keys']}
+        filtered_status = {
+            'rack_id': f"{info['name']} ({rack_id})",
+            **filtered_status,
+        }
+        if 'memory_available_rate' in info['keys']:
+            filtered_status['memory_available_rate'] = int(status.get('memory_available_rate', 0))
+        else:
+            filtered_status['memory_available_rate'] = -1
 
-            if 'sda2_usage' in info['keys']:
-                filtered_status['sda2_usage'] = 100 - int(status.get('sda2_usage', 0))
-            else:
-                filtered_status['sda2_usage'] = -1
+        if 'sda2_usage' in info['keys']:
+            filtered_status['sda2_usage'] = 100 - int(status.get('sda2_usage', 0))
+        else:
+            filtered_status['sda2_usage'] = -1
 
-            if 'git_infra_commit_behind' in info['keys']:
-                filtered_status['git_infra_commit_behind'] = int(status.get('git_infra_commit_behind', -100))
-            else:
-                filtered_status['git_infra_commit_behind'] = -1
+        if 'git_infra_commit_behind' in info['keys']:
+            filtered_status['git_infra_commit_behind'] = int(status.get('git_infra_commit_behind', -100))
+        else:
+            filtered_status['git_infra_commit_behind'] = -1
 
-            if 'git_screen_commit_behind' in info['keys']:
-                filtered_status['git_screen_commit_behind'] = int(status.get('git_screen_commit_behind', -100))
-            else:
-                filtered_status['git_screen_commit_behind'] = -1
+        if 'git_screen_commit_behind' in info['keys']:
+            filtered_status['git_screen_commit_behind'] = int(status.get('git_screen_commit_behind', -100))
+        else:
+            filtered_status['git_screen_commit_behind'] = -1
 
-            if 'git_iot_commit_behind' in info['keys']:
-                filtered_status['git_iot_commit_behind'] = int(status.get('git_iot_commit_behind', -100))
-            else:
-                filtered_status['git_iot_commit_behind'] = -1
+        if 'git_iot_commit_behind' in info['keys']:
+            filtered_status['git_iot_commit_behind'] = int(status.get('git_iot_commit_behind', -100))
+        else:
+            filtered_status['git_iot_commit_behind'] = -1
 
-            data.append(filtered_status)
+        data.append(filtered_status)
     return data
 
 # Function to check if an SMS record exists in the sms_status table
@@ -146,7 +145,7 @@ def data_bars(df, column):
         styles = pd.DataFrame("", index=df.index, columns=df.columns)
         return styles
 #Drop placeholder record from df
-df = df[df['rack_id'] != 'placeholder']
+df = df[df['rack_id'] != 'placeholder (placeholder)']
 
 df = df.style.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('memory_')]])
 df = df.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('sda')]])
