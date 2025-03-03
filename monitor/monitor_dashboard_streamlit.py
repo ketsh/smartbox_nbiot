@@ -10,7 +10,7 @@ from monitor_config import rack_info
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 st.set_page_config(layout="wide")
 # update every 5 mins
-st_autorefresh(interval=5 * 60 * 1000, key="dataframerefresh")
+st_autorefresh(interval=1 * 60 * 1000, key="dataframerefresh")
 
 
 # Function to get process status for a given rack ID
