@@ -78,9 +78,7 @@ def sending_sms(message, number):
 # Fetch process status for all rack IDs and send SMS if needed
 def check_and_notify():
     for rack_id, info in rack_info.items():
-        #TODO: change it back
-        # if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
-        if rack_id not in ['placeholder']:
+        if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
             status = get_process_status(rack_id, info['tzadd'])
             for key in info['keys']:
                 if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
