@@ -34,7 +34,7 @@ def send_sms(message):
 
     response1 = sending_sms(message, '4367761649272')
     sms_status_write(response1)
-    response2 = sending_sms(message, '32476561638')
+    response2 = sending_sms(message, '36304628788')
     if response1.status_code != 200:
         sms_status_write(response2)
 
@@ -78,7 +78,8 @@ def sending_sms(message, number):
 # Fetch process status for all rack IDs and send SMS if needed
 def check_and_notify():
     for rack_id, info in rack_info.items():
-        if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
+        if rack_id not in ['placeholder']:
+        #if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
             status = get_process_status(rack_id, info['tzadd'])
             for key in info['keys']:
                 if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
