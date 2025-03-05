@@ -32,25 +32,13 @@ def send_sms(message):
         conn.close()
         return False  # Do not send SMS if a record exists in the sms_status table
 
-    sms_url = "https://api.bipkampany.hu/sendsms"
-    random_hash = generate_random_hash()
-    headers = {
-        'Authorization': 'AccessKey ddc6a6ad2962963d40eaf51e3b9c5e70',
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    payload = {
-        'message': message,
-        'number': 4367761649272,
-        'key': 'ddc6a6ad2962963d40eaf51e3b9c5e70',
-        'referenceid': random_hash,
-        'type': "unicode",
-        'format': "json",
-        'callback': None
-    }
-    response = requests.post(sms_url, data=payload, headers=headers)
-    print(response.status_code)
-    print(response.text)
+    response1 = sending_sms(message, '4367761649272')
+    sms_status_write(response1)
+    response2 = sending_sms(message, '32476561638')
+    if response1.status_code != 200:
+        sms_status_write(response2)
+
+def sms_status_write(response):
     if response.status_code == 200:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -64,10 +52,35 @@ def send_sms(message):
         return True
     return False
 
+def sending_sms(message, number):
+    sms_url = "https://api.bipkampany.hu/sendsms"
+    random_hash = generate_random_hash()
+    headers = {
+        'Authorization': 'AccessKey ddc6a6ad2962963d40eaf51e3b9c5e70',
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    payload = {
+        'message': message,
+        'number': number,
+        'key': 'ddc6a6ad2962963d40eaf51e3b9c5e70',
+        'referenceid': random_hash,
+        'type': "unicode",
+        'format': "json",
+        'callback': None
+    }
+    response = requests.post(sms_url, data=payload, headers=headers)
+    print(response.status_code)
+    print(response.text)
+    return response
+
+
 # Fetch process status for all rack IDs and send SMS if needed
 def check_and_notify():
     for rack_id, info in rack_info.items():
-        if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
+        #TODO: change it back
+        # if rack_id not in ['bzAi1DPflIKzg75ipRF3', 'placeholder']:
+        if rack_id not in ['placeholder']:
             status = get_process_status(rack_id, info['tzadd'])
             for key in info['keys']:
                 if key.startswith('ps_') and (status.get(key) == "NO" or status.get(key) == "" or status.get(key) == None):
