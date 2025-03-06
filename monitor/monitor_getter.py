@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import sqlite3
 import datetime
 import os
+from monitor_config import rack_info
 
 app = Flask(__name__)
 #app.config['APPLICATION_ROOT'] = '/api'
@@ -95,7 +96,8 @@ def get_process_status():
     results = cursor.fetchall()
     conn.close()
 
-    process_status = {key: value for key, value in results}
+    valid_keys = rack_info.get(rack_id, {}).get('keys', [])
+    process_status = {key: value for key, value in results if key in valid_keys}
 
     return jsonify(process_status), 200
 
