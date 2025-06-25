@@ -17,4 +17,8 @@ rack_info = {
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "LCFEL7NLIqFX4Cw6GQit": {"name": "Locker Astoria (Controller)", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind",  "git_iot_commit_behind"]},
+    "tgNFLEu06sNUZPBsUEti": {"name": "Solymár Szalay Esztergom", "tzadd": 2,
+                             "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin",
+                                      "memory_available_rate", "sda2_usage", "git_infra_commit_behind",
+                                      "git_iot_commit_behind"]},
 }
