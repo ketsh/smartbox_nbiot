@@ -63,6 +63,11 @@ cd /var/www/smartbox_nbiot
 git pull 
 systemctl restart apache2
 
+# Starting monitoring
+IN case of restarting the machine, you need to manually start the streamlit dashboard
+source /var/www/smartbox_nbiot/monitor/start_streamlit_app.sh &
+
+
 # Git pull new changes - streamlit
 
 cd /var/www/smartbox_nbiot
@@ -87,3 +92,9 @@ select * from records where rack_id = '3o3ZcwEuKJ7aM0i5g7RY' order by timestamp 
 
 ## Getting memory consumption
 select * from records where rack_id = '3o3ZcwEuKJ7aM0i5g7RY' and timestamp between '2025-03-02T16:00' and '2025-03-02T22:00' and key in ( 'available_memory', 'ps_smartbox') order by timestamp desc;
+
+## Adding new rack
+Add it to monitor_config.py
+
+If you have added a new rack id, then you need to restart the the apache again
+systemctl restart apache2
