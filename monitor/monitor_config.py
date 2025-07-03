@@ -19,4 +19,6 @@ rack_info = {
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind",  "git_iot_commit_behind"]},
     "tgNFLEu06sNUZPBsUEti": {"name": "Szalay Nissan Esztergom", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
+    "8M9PCvpqF6GMbMDv8nMv": {"name": "Loker Astoria (Terminal)", "tzadd": 2,
+                             "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]}
 }
