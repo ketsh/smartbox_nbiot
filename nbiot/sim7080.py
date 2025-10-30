@@ -12,7 +12,7 @@ class SIM7080():
     restartNeeded = False
     display = None
     wdt = None
-    def __init__(self, display=None, wdt=None, init=True, switch=True):
+    def __init__(self, display=None, wdt=None, init=True, switch=True, led=None):
         #uart: SIM7020
         #self.uart2 = UART(2)
         self.simpwr = Pin(4, Pin.OUT)
@@ -22,8 +22,10 @@ class SIM7080():
         self.uart2 = UART(2, 19200,rx=16,tx=17,timeout=10)
         #self.uart2.init(115200, bits=8, parity=None, stop=1)
         self.display = display
+        self.led = led
         self.wdt = wdt
         #self.off()
+        self.led.sign(3, typ="warning")
         if switch:
             self.on()
         sleep_ms(10*1000)
@@ -87,8 +89,10 @@ class SIM7080():
     def check(self, command, checkValue, sl_ms=500, timeout=10):
         timeo = time()
         while  True:
+
             initOK = self.send(command, retType="string", timeout=1)
-            sleep_ms(sl_ms)
+            self.led.sign(1, typ="warning")
+            sleep_ms(sl_ms-200)
             #self.wdt.feed()
             if initOK.find(checkValue) > -1:
                 try:
@@ -110,6 +114,7 @@ class SIM7080():
         self.show("Bekapcsolas...", cl=True)
         self.atok = self.check('AT', 'OK', timeout=20)
         if self.atok:
+            self.led.sign(3, typ="warning")
             self.display.status(4)
             self.send('AT+CPSMS=0')
             self.send("AT+IPR=19200", False)
@@ -186,15 +191,16 @@ class SIM7080():
 
     def openUDPServer(self):
         self.send('AT+CACLOSE=1')
-        sleep_ms(100)
+        self.led.sign(1, typ="warning")
         cr = self.send('AT+CACID=1')
         cr = self.check('AT+CACID?', 'CACID: 1')
-        sleep_ms(100)
+        self.led.sign(1, typ="warning")
         if cr:
             cr = self.send('AT+CASERVER=1,0,"UDP",6005')
         return  cr
 
     def udpIncomingMessage(self):
+        self.led.sign(1, typ="warning")
         cr = self.send('AT+CARECV=1,512', retType="o")
         return cr
 

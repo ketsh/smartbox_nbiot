@@ -85,7 +85,13 @@ if __name__=="__main__":
             except:
                 pass
             led = LED()
-            led.blink()
+
+            # 4 sign at startup and check colors
+            led.sign(4)
+            led.sign(4, typ="error")
+            led.sign(4, typ="incoming")
+            led.sign(4, typ="warning")
+
 
             rtc = RTC()
 
@@ -153,7 +159,8 @@ if __name__=="__main__":
 
 
             try:
-                sim = SIM7080(lcd, wdt)
+                led.sign(1, typ="warning")
+                sim = SIM7080(lcd, wdt, led=led)
             except Exception as e:
                 sleep(1)
                 log.log("HIBA SIM: {}".format(str(e)), "E")
@@ -162,6 +169,7 @@ if __name__=="__main__":
                 tryGetDate = 0
                 while noDate and tryGetDate<=5:
                     try:
+                        led.sign(1, typ="warning")
                         seconds_since_epoch = sim.getCLK()
                         if seconds_since_epoch != None:
                             lt = localtime(seconds_since_epoch)
@@ -177,7 +185,6 @@ if __name__=="__main__":
                 current_time = rtc.datetime() # get the current time
 
                 reset_firmware_update()
-
                 udpServer = UDPServer(sim, lcd, wdt, led, keepAliveSec=None)
                 udpServer.open()
 

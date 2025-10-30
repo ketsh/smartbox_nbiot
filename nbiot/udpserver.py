@@ -11,7 +11,7 @@ class UDPServer():
         self.display = display
         self.keepAliveSec = keepAliveSec
         self.led = led
-        self.led.blink()
+        self.led.sign(5, typ="incoming")
 
     def open(self):
         try:
@@ -29,7 +29,7 @@ class UDPServer():
                 cr = self.sim.check("AT+CACID?", "CACID: 1")
                 while True and cr:
                     message = self.sim.udpIncomingMessage()
-                    self.led.blink()
+                    self.led.sign(times=1, typ="incoming")
                     self.wdt.feed()
                     try:
                         messageIdx = message.find("CARECV: ")
@@ -52,12 +52,13 @@ class UDPServer():
 
                     try:
                         command = messageDict["open_locker"]
-                        self.led.blink()
+                        self.led.sign(times=2, typ="incoming")
 
                         board = int(command.split(",")[0])
                         door = int(command.split(",")[1])
                         controller = vc.VoungController()
                         controller.open_lock(board, door)
+                        self.led.sign(1, typ="incoming")
                     except TypeError:
                         pass
                     except:
