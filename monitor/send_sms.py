@@ -32,7 +32,7 @@ def send_sms(message):
         conn.close()
         return False  # Do not send SMS if a record exists in the sms_status table
 
-    response1 = sending_sms(message, '4367761649272')
+    response1 = sending_sms(message, '36208861084')
     sms_status_write(response1)
     response2 = sending_sms(message, '36304628788')
     if response1.status_code != 200:
