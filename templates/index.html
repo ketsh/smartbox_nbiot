@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Door Control Panel</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        h1 { text-align: center; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .controls { text-align: center; margin-bottom: 20px; }
+        input[type="text"] { padding: 10px; width: 300px; font-size: 16px; }
+        button { padding: 10px 20px; font-size: 16px; margin-left: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background: #007bff; color: white; }
+        th:first-child { background: #0056b3; }
+        .open-btn { background: #28a745; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; width: 90%; font-size: 14px; }
+        .open-btn:hover { background: #218838; }
+        .open-all-btn { background: #dc3545; color: white; padding: 15px 30px; font-size: 20px; margin: 30px auto; display: block; border: none; border-radius: 8px; }
+        .status { margin: 20px 0; padding: 12px; text-align: center; font-weight: bold; font-size: 18px; }
+        .debug { background: #fff3cd; padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 12px; display: none; }  /* Hidden by default */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Door Control Panel</h1>
+
+        <div class="controls">
+            <label for="simID"><strong>simID:</strong></label>
+            <input type="text" id="simID" placeholder="Enter simID" value="default_sim">
+            <button onclick="openAllDoors()">Open All Doors</button>
+            <button onclick="toggleDebug()">Toggle Debug Logs</button>  <!-- New debug button -->
+        </div>
+
+        <div id="status" class="status">Ready – enter simID and start opening doors</div>
+        <div id="debugLog" class="debug"></div>  <!-- Debug area -->
+
+        <table id="doorTable">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Door</th>
+                    <th>Board 0</th>
+                    <th>Board 1</th>
+                    <th>Board 2</th>
+                    <th>Board 3</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button class="open-all-btn" onclick="openAllDoors()">
+            OPEN ALL 200 DOORS (Boards 0–3 | Doors 1–50)
+        </button>
+    </div>
+
+    <script>
+        const TOTAL_BOARDS = 4;
+        const DOORS_PER_BOARD = 50;
+        let debugVisible = false;
+
+        function getSimIDFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('simID') || '';
+        }
+
+        function populateSimID() {
+            const simIDInput = document.getElementById('simID');
+            const urlSimID = getSimIDFromURL();
+            if (urlSimID) {
+                simIDInput.value = decodeURIComponent(urlSimID);
+                setStatus(`simID loaded from URL: ${urlSimID}`, 'green');
+            }
+        }
+
+        function buildTable() {
+            const tbody = document.querySelector('#doorTable tbody');
+            for (let door = 1; door <= DOORS_PER_BOARD; door++) {
+                const tr = document.createElement('tr');
+                const doorTd = document.createElement('td');
+                doorTd.textContent = door;
+                doorTd.style.fontWeight = 'bold';
+                doorTd.style.backgroundColor = '#f8f9fa';
+                tr.appendChild(doorTd);
+
+                for (let board = 0; board < TOTAL_BOARDS; board++) {
+                    const td = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.textContent = 'OPEN';
+                    btn.className = 'open-btn';
+                    btn.onclick = () => openDoor(board, door);
+                    td.appendChild(btn);
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+        }
+
+        function getSimID() {
+            const val = document.getElementById('simID').value.trim();
+            if (!val) { alert('Please enter a simID first!'); return null; }
+            return val;
+        }
+
+        function logDebug(msg) {
+            if (debugVisible) {
+                const debugEl = document.getElementById('debugLog');
+                debugEl.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${msg}</div>`;
+                debugEl.scrollTop = debugEl.scrollHeight;
+            }
+            console.log(msg);  // Always log to console too
+        }
+
+        function toggleDebug() {
+            debugVisible = !debugVisible;
+            document.getElementById('debugLog').style.display = debugVisible ? 'block' : 'none';
+        }
+
+        async function openDoor(boardID, doorID) {
+            const simID = getSimID();
+            if (!simID) return;
+
+            const url = `/open_door?simID=${encodeURIComponent(simID)}&boardID=${boardID}&doorID=${doorID}`;
+            logDebug(`Calling single door: ${url}`);
+
+            try {
+                const resp = await fetch(url);
+                logDebug(`Response status: ${resp.status} | Content-Type: ${resp.headers.get('content-type') || 'unknown'}`);
+
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    logDebug(`Error body preview: ${text.substring(0, 200)}...`);
+                    setStatus(`HTTP ${resp.status}: ${text.includes('<!DOCTYPE') ? 'Got HTML instead of JSON — check server logs!' : text.substring(0, 100)}`, 'red');
+                    return;
+                }
+
+                if (!resp.headers.get('content-type')?.includes('application/json')) {
+                    const text = await resp.text();
+                    logDebug(`Non-JSON response: ${text.substring(0, 200)}...`);
+                    setStatus('Server returned non-JSON (likely HTML) — route not matched?', 'red');
+                    return;
+                }
+
+                const data = await resp.json();
+                logDebug(`Success: ${JSON.stringify(data)}`);
+                setStatus(`Door ${boardID}-${doorID} opened`, 'green');
+            } catch (err) {
+                logDebug(`Full error: ${err.message} | Stack: ${err.stack}`);
+                setStatus(`Network error: ${err.message}`, 'red');
+            }
+        }
+
+        async function openAllDoors() {
+            const simID = getSimID();
+            if (!simID) return;
+            if (!confirm(`Open ALL 200 doors for simID "${simID}"?`)) return;
+
+            setStatus('Opening all doors... please wait', 'orange');
+            const url = `/open_all_doors?simID=${encodeURIComponent(simID)}&maxBoardID=3&maxDoorID=50`;
+            logDebug(`Calling open all: ${url}`);
+
+            try {
+                const resp = await fetch(url);
+                logDebug(`All response status: ${resp.status} | Content-Type: ${resp.headers.get('content-type') || 'unknown'}`);
+
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    logDebug(`All error body: ${text.substring(0, 200)}...`);
+                    setStatus(`HTTP ${resp.status}: ${text.includes('<!DOCTYPE') ? 'Got HTML — check loops/UDP' : text.substring(0, 100)}`, 'red');
+                    return;
+                }
+
+                if (!resp.headers.get('content-type')?.includes('application/json')) {
+                    const text = await resp.text();
+                    setStatus('Non-JSON response for all doors', 'red');
+                    return;
+                }
+
+                const data = await resp.json();
+                logDebug(`All success: ${JSON.stringify(data)}`);
+                setStatus('All 200 doors opened successfully!', 'green');
+            } catch (err) {
+                logDebug(`All error: ${err.message}`);
+                setStatus(`Network error: ${err.message}`, 'red');
+            }
+        }
+
+        function setStatus(message, color = 'black') {
+            const el = document.getElementById('status');
+            el.textContent = message;
+            el.style.color = color;
+        }
+
+        window.onload = () => {
+            populateSimID();
+            buildTable();
+            if (!getSimIDFromURL()) {
+                setStatus('Enter simID below or add ?simID=your_id to the URL', 'blue');
+            }
+            logDebug('Page loaded – debug ready');
+        };
+    </script>
+</body>
+</html>

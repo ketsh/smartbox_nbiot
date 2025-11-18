@@ -1,7 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from sendPackage import UDPSender
 
 app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/open_door', methods=['GET'])
