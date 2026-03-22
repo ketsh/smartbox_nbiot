@@ -117,7 +117,11 @@ if __name__=="__main__":
             bus = None
             i2c = None
             setupI2C()
+            # Without OLED
             lcd = displaybulk()
+
+            # With LED
+            #lcd = OLED(i2c)
             log.log(reset_cause())
 
             wdt = WDT(timeout=60*60*1000)  # enable it with a timeout of 10min ---put it back

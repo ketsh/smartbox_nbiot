@@ -1,5 +1,10 @@
 
 # Dictionary of rack IDs, their names, tzadd values, and keys to be shown
+#"ps_controller_handler", "ps_firebase_main", -- nyitó elektronika, mindenhova kell
+# "ps_firebaseremoteadmin", --Távoli elérés  mindenhova
+# "memory_available_rate", "sda2_usage", --rendeszmetrika - mindenhova
+# "git_*" - mindenhova - azt mutatja, hogy mennyire vagyunk a master-től (hány kommitra)
+#  "ps_smartbox", "ps_firefox_process_count" - CSAK AKKOR, HA VAN KIJELZŐ
 rack_info = {
     "placeholder": {"name": "placeholder", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin",
@@ -23,4 +28,6 @@ rack_info = {
                              "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
     "xNIIIgM2vxdbMFrlAanK":  {"name": "Dürer kert", "tzadd": 2,
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_iot_commit_behind"]},
+    "E4PowSzXxmN08b52WYhT": {"name": "Aquashop", "tzadd": 2,
+                             "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
 }
