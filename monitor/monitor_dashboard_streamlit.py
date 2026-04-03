@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd
 import requests
@@ -9,6 +10,177 @@ from monitor_config import rack_info
 
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 st.set_page_config(layout="wide")
+
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'pin_input' not in st.session_state:
+    st.session_state.pin_input = ""
+if 'pin_error' not in st.session_state:
+    st.session_state.pin_error = False
+
+# Handle PIN button presses via query params
+params = st.query_params
+if 'p' in params:
+    btn = params['p']
+    st.query_params.clear()
+    if btn == 'd':
+        st.session_state.pin_input = st.session_state.pin_input[:-1]
+        st.session_state.pin_error = False
+    elif btn == 'ok':
+        if st.session_state.pin_input == "5550":
+            st.session_state.authenticated = True
+            st.session_state.pin_input = ""
+            st.session_state.pin_error = False
+        else:
+            st.session_state.pin_input = ""
+            st.session_state.pin_error = True
+    elif len(st.session_state.pin_input) < 4:
+        st.session_state.pin_input += btn
+    st.rerun()
+
+if not st.session_state.authenticated:
+    pin_len = len(st.session_state.pin_input)
+    dots_html = "".join([
+        f'<div class="dot {"filled" if i < pin_len else ""}"></div>'
+        for i in range(4)
+    ])
+    error_html = '<div class="error">Hibás PIN kód</div>' if st.session_state.pin_error else '<div class="error"></div>'
+
+    components.html(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }}
+        .card {{
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 32px;
+            padding: 40px 36px 36px;
+            width: 320px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+        }}
+        .title {{
+            color: rgba(255,255,255,0.85);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }}
+        .dots {{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 12px;
+        }}
+        .dot {{
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.35);
+            transition: all 0.2s;
+        }}
+        .dot.filled {{
+            background: #a78bfa;
+            border-color: #a78bfa;
+            box-shadow: 0 0 12px #a78bfa99;
+        }}
+        .error {{
+            color: #f87171;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 28px;
+            padding: 4px 0 16px;
+        }}
+        .grid {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }}
+        button {{
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+            outline: none;
+        }}
+        button:hover {{
+            background: rgba(167,139,250,0.25);
+            box-shadow: 0 0 18px rgba(167,139,250,0.35);
+        }}
+        button:active {{ transform: scale(0.92); }}
+        button.confirm {{
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            border: none;
+            box-shadow: 0 4px 20px rgba(124,58,237,0.5);
+        }}
+        button.confirm:hover {{
+            box-shadow: 0 4px 28px rgba(124,58,237,0.75);
+        }}
+        button.delete {{
+            background: rgba(248,113,113,0.1);
+            border-color: rgba(248,113,113,0.3);
+        }}
+        button.delete:hover {{
+            background: rgba(248,113,113,0.25);
+            box-shadow: 0 0 18px rgba(248,113,113,0.35);
+        }}
+    </style>
+    </head>
+    <body>
+    <div class="card">
+        <div class="title">SmartBox Monitor</div>
+        <div class="dots">{dots_html}</div>
+        {error_html}
+        <div class="grid">
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button class="delete" onclick="press('d')">⌫</button>
+            <button onclick="press('0')">0</button>
+            <button class="confirm" onclick="press('ok')">✓</button>
+        </div>
+    </div>
+    <script>
+        function press(val) {{
+            window.parent.location.href = window.parent.location.pathname + '?p=' + val;
+        }}
+    </script>
+    </body>
+    </html>
+    """, height=520)
+
+    st.stop()
+
 # update every 5 mins
 st_autorefresh(interval=1 * 60 * 1000, key="dataframerefresh")
 
@@ -149,8 +321,8 @@ df = df[df['rack_id'] != 'placeholder (placeholder)']
 
 df = df.style.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('memory_')]])
 df = df.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('sda')]])
-styled_df = df.applymap(apply_styles, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('ps_')]])
-styled_df = styled_df.applymap(apply_styles_git, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('git_')]])
+styled_df = df.map(apply_styles, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('ps_')]])
+styled_df = styled_df.map(apply_styles_git, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('git_')]])
 
 #styled_df = styled_df.apply(data_bars, column='memory_available_rate', axis=None)
 #styled_df = styled_df.apply(data_bars, column='sda2_usage', axis=None)
