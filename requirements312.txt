@@ -1,0 +1,13 @@
+Flask==2.3.3
+werkzeug==2.3.7
+dash==2.14.0
+dash-core-components==2.0.0
+dash-html-components==2.0.0
+dash-table==5.0.0
+requests==2.31.0
+pandas==2.1.1
+numpy==1.26.4
+psutil
+streamlit
+matplotlib
+streamlit_autorefresh
