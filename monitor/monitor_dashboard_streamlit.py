@@ -9,6 +9,182 @@ from monitor_config import rack_info
 
 db_path = os.path.join(os.path.dirname(__file__), 'monitor_data.db')
 st.set_page_config(layout="wide")
+
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'pin_input' not in st.session_state:
+    st.session_state.pin_input = ""
+if 'pin_error' not in st.session_state:
+    st.session_state.pin_error = False
+
+def pin_press(val):
+    if val == 'd':
+        st.session_state.pin_input = st.session_state.pin_input[:-1]
+        st.session_state.pin_error = False
+    elif val == 'ok':
+        if st.session_state.pin_input == "5550":
+            st.session_state.authenticated = True
+            st.session_state.pin_input = ""
+            st.session_state.pin_error = False
+        else:
+            st.session_state.pin_input = ""
+            st.session_state.pin_error = True
+    elif len(st.session_state.pin_input) < 4:
+        st.session_state.pin_input += val
+        st.session_state.pin_error = False
+
+if not st.session_state.authenticated:
+    pin_len = len(st.session_state.pin_input)
+    dots_html = "".join([
+        f'<span class="pin-dot {"filled" if i < pin_len else ""}"></span>'
+        for i in range(4)
+    ])
+    error_html = '<div class="pin-error">Hibás PIN kód</div>' if st.session_state.pin_error else '<div class="pin-error"></div>'
+
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+
+    .stApp {
+        background: #0b0e14 !important;
+        background-image:
+            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(16,85,70,0.18) 0%, transparent 70%),
+            radial-gradient(circle at 80% 90%, rgba(20,40,80,0.12) 0%, transparent 50%) !important;
+    }
+    header[data-testid="stHeader"] { display: none; }
+    footer { display: none !important; }
+    #MainMenu { display: none !important; }
+    section[data-testid="stMain"] > div { padding-top: 0 !important; }
+    .stDeployButton, div[data-testid="stToolbar"],
+    div[data-testid="stDecoration"], div[data-testid="stStatusWidget"] {
+        display: none !important;
+    }
+
+    /* A container mint kártya */
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.pin-header) {
+        background: linear-gradient(170deg, rgba(20,28,38,0.95), rgba(12,16,22,0.98)) !important;
+        border: 1px solid rgba(56,230,180,0.12) !important;
+        border-radius: 24px !important;
+        padding: 40px 30px 28px !important;
+        max-width: 400px !important;
+        margin: 50px auto 0 !important;
+        box-shadow:
+            0 1px 0 0 rgba(56,230,180,0.08) inset,
+            0 24px 64px rgba(0,0,0,0.6) !important;
+        position: relative;
+    }
+
+    .pin-header {
+        text-align: center;
+        margin-bottom: 8px;
+    }
+    .pin-lock {
+        font-size: 1.6rem;
+        opacity: 0.45;
+        margin-bottom: 10px;
+    }
+    .pin-title {
+        font-family: 'Outfit', sans-serif;
+        color: rgba(220,235,230,0.92);
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+    }
+    .pin-dots {
+        display: flex;
+        justify-content: center;
+        gap: 22px;
+        margin-bottom: 10px;
+    }
+    .pin-dot {
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: rgba(56,230,180,0.06);
+        border: 1.5px solid rgba(56,230,180,0.25);
+        display: inline-block;
+        transition: all 0.2s ease;
+    }
+    .pin-dot.filled {
+        background: rgba(56,230,180,0.85);
+        border-color: rgba(56,230,180,0.9);
+        box-shadow: 0 0 12px rgba(56,230,180,0.4), 0 0 4px rgba(56,230,180,0.6);
+    }
+    .pin-error {
+        color: #e85d5d;
+        text-align: center;
+        font-size: 0.85rem;
+        min-height: 24px;
+        padding: 4px 0 8px;
+    }
+
+    /* Gomb stílusok - globális, nincs :has() */
+    div[data-testid="stButton"] > button {
+        width: 86px !important;
+        height: 86px !important;
+        min-width: 86px !important;
+        min-height: 86px !important;
+        border-radius: 50% !important;
+        border: 1px solid rgba(56,230,180,0.15) !important;
+        background: rgba(56,230,180,0.05) !important;
+        color: rgba(230,240,235,0.9) !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 2.2rem !important;
+        font-weight: 500 !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 3px auto !important;
+        transition: all 0.15s ease !important;
+        cursor: pointer !important;
+    }
+    div[data-testid="stButton"] > button:hover {
+        background: rgba(56,230,180,0.12) !important;
+        border-color: rgba(56,230,180,0.3) !important;
+        box-shadow: 0 0 18px rgba(56,230,180,0.1) !important;
+        color: rgba(56,230,180,1) !important;
+    }
+    div[data-testid="stButton"] > button:active {
+        transform: scale(0.92) !important;
+        background: rgba(56,230,180,0.18) !important;
+    }
+    div[data-testid="stButton"] > button p {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 2.2rem !important;
+        font-weight: 500 !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    _, col_center, _ = st.columns([1.2, 1, 1.2])
+    with col_center:
+        pin_container = st.container(border=True)
+        with pin_container:
+            st.markdown(f"""
+            <div class="pin-header">
+                <div class="pin-lock">&#x1F512;</div>
+                <div class="pin-title">SmartBox Monitor</div>
+                <div class="pin-dots">{dots_html}</div>
+                {error_html}
+            </div>
+            """, unsafe_allow_html=True)
+
+            for row_digits in [('1','2','3'), ('4','5','6'), ('7','8','9'), ('d','0','ok')]:
+                c1, c2, c3 = st.columns([1,1,1])
+                for col_btn, digit in zip([c1, c2, c3], row_digits):
+                    with col_btn:
+                        label = {'d': '⌫', 'ok': '✓'}.get(digit, digit)
+                        if st.button(label, key=f"pin_{digit}", use_container_width=False):
+                            pin_press(digit)
+                            st.rerun()
+
+    st.stop()
+
 # update every 5 mins
 st_autorefresh(interval=1 * 60 * 1000, key="dataframerefresh")
 
@@ -149,8 +325,8 @@ df = df[df['rack_id'] != 'placeholder (placeholder)']
 
 df = df.style.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('memory_')]])
 df = df.background_gradient(cmap='RdYlGn', low=0.2, high=0.2, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('sda')]])
-styled_df = df.applymap(apply_styles, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('ps_')]])
-styled_df = styled_df.applymap(apply_styles_git, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('git_')]])
+styled_df = df.map(apply_styles, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('ps_')]])
+styled_df = styled_df.map(apply_styles_git, subset=pd.IndexSlice[:, df.columns[df.columns.str.startswith('git_')]])
 
 #styled_df = styled_df.apply(data_bars, column='memory_available_rate', axis=None)
 #styled_df = styled_df.apply(data_bars, column='sda2_usage', axis=None)

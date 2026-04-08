@@ -30,4 +30,6 @@ rack_info = {
                              "keys": ["ps_controller_handler", "ps_firebase_main", "ps_firebaseremoteadmin", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_iot_commit_behind"]},
     "E4PowSzXxmN08b52WYhT": {"name": "Aquashop", "tzadd": 2,
                              "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
+    "JolQ0iDy9fJw7X7XjZp8": {"name": "CityBike", "tzadd": 2,
+                             "keys": ["ps_firebaseremoteadmin", "ps_smartbox", "ps_firefox_process_count", "memory_available_rate", "sda2_usage", "git_infra_commit_behind", "git_screen_commit_behind", "git_iot_commit_behind"]},
 }
